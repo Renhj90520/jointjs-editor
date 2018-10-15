@@ -20,7 +20,7 @@ export default {};
 </script>
 <style scoped>
 .toolbar {
-  height: 34px;
+  flex: 0 0 34px;
   background-color: whitesmoke;
   border-bottom: 1px solid #e0e0e0;
   display: flex;

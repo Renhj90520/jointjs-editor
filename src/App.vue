@@ -6,7 +6,9 @@
       <app-dragbarv></app-dragbarv>
       <div class="rightarea">
         <div class="dragsource"></div>
-        <div class="stage"></div>
+        <div class="stage" ref="stage">
+          <app-canvas></app-canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -16,12 +18,14 @@
 import DragBarV from "./components/DragBar-V";
 import Toolbar from "./components/Toolbar";
 import Sidebar from "./components/Sidebar";
+import Canvas from "./components/Canvas";
 export default {
   name: "App",
   components: {
     "app-dragbarv": DragBarV,
     "app-toolbar": Toolbar,
-    "app-sidebar": Sidebar
+    "app-sidebar": Sidebar,
+    "app-canvas": Canvas
   }
 };
 </script>
@@ -51,12 +55,11 @@ body {
   flex: 1 1 auto;
 }
 .dragsource {
-  position: absolute;
   width: 100%;
-  height: 80px;
+  flex: 0 0 80px;
   background-color: rgba(30, 30, 30, 0.6);
 }
 .stage {
-  min-width: 2571px;
+  overflow: auto;
 }
 </style>
