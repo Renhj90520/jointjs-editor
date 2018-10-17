@@ -1,6 +1,6 @@
 <template>
     <div class="paper-wrapper" ref="paperWrapper">
-        <div id="paper" ref="paper"></div>
+        <div @drop="drop" @dragenter="dragenter" @dragleave="dragleave" @dragover="dragover" id="paper" ref="paper"></div>
     </div>
 </template>
 <script>
@@ -25,6 +25,22 @@ export default {
 
     this.$refs.paperWrapper.parentElement.scrollLeft = 700;
     this.$refs.paperWrapper.parentElement.scrollTop = 500;
+  },
+  methods: {
+    drop(event) {
+      console.log(event);
+    },
+    dragenter(event) {
+      console.log(event);
+      event.dataTransfer.dropEffect = "linkMove";
+    },
+    dragleave(event) {
+      console.log(event);
+    },
+    dragover(event) {
+      console.log(event);
+      event.preventDefault();// Prevent default to allow drop
+    }
   }
 };
 </script>

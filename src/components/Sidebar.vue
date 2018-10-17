@@ -16,6 +16,16 @@ export default {
       ]
     };
   },
+  methods: {
+    dragstart(event) {
+      console.log(event);
+      event.target.style.opacity = 0.5;
+    },
+    dragend(event) {
+      console.log(event);
+      event.target.style.opacity = "";
+    }
+  },
   components: {
     "app-sidebar-item": SidebarItem
   }

@@ -5,7 +5,7 @@
           <span>{{info.title}}</span>
         </a>
         <div class="item-container" :style="{'height':isCollapsed?'0px':'auto'}">
-            <a class="item" v-for="item in info.items" :key="item.type">
+            <a class="item" @dragstart="dragstart($event,item)" @dragend="dragend($event,item)" draggable="true" v-for="item in info.items" :key="item.type">
               <img width="36px" height="36px" :src="'/static/shapes/'+item.type+'.svg'" alt="aaa">
             </a>
         </div>
@@ -18,6 +18,18 @@ export default {
     return {
       isCollapsed: false
     };
+  },
+  methods: {
+    dragstart(event, data) {
+      console.log(event);
+      console.log(data);
+      event.target.style.opacity = 0.5;
+    },
+    dragend(event, data) {
+      console.log(event);
+      console.log(data);
+      event.target.style.opacity = "";
+    }
   }
 };
 </script>
