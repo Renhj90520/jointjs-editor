@@ -4,12 +4,19 @@
     </div>
 </template>
 <script>
+import Bus from "@/bus";
 export default {
+  data() {
+    return {
+      graph: null,
+      dragSource: null
+    };
+  },
   mounted() {
-    const graph = new joint.dia.Graph();
+    this.graph = new joint.dia.Graph();
     const paper = new joint.dia.Paper({
       el: this.$refs.paper,
-      model: graph,
+      model: this.graph,
       width: 800,
       height: 1150,
       gridSize: 10,
@@ -25,10 +32,26 @@ export default {
 
     this.$refs.paperWrapper.parentElement.scrollLeft = 700;
     this.$refs.paperWrapper.parentElement.scrollTop = 500;
+    Bus.$on("drag-start", data => {
+      this.dragSource = data;
+    });
+    Bus.$on("drag-end", () => {
+      this.dragSource = null;
+    });
   },
   methods: {
     drop(event) {
       console.log(event);
+      console.log(this.dragSource);
+      if (this.dragSource) {
+        switch (this.dragSource.type) {
+          case "rectangle":
+            this.drawRect();
+            break;
+          default:
+            break;
+        }
+      }
     },
     dragenter(event) {
       console.log(event);
@@ -39,7 +62,32 @@ export default {
     },
     dragover(event) {
       console.log(event);
-      event.preventDefault();// Prevent default to allow drop
+      event.preventDefault(); // Prevent default to allow drop
+    },
+    drawRect() {
+      const rect = new joint.shapes.standard.Rectangle();
+      rect.position(100, 30);
+      rect.resize(100, 40);
+      rect.attr({
+        body: { fill: "blue" },
+        label: {
+          text: "Hello",
+          fill: "white"
+        },
+        highlighter: {
+          name: "stroke",
+          options: {
+            padding: 10,
+            rx: 5,
+            ry: 5,
+            attrs: {
+              "stroke-width": 3,
+              stroke: "#FF0000"
+            }
+          }
+        }
+      });
+      rect.addTo(this.graph);
     }
   }
 };

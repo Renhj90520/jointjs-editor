@@ -12,6 +12,7 @@
     </li>
 </template>
 <script>
+import Bus from "@/bus";
 export default {
   props: ["info"],
   data() {
@@ -24,11 +25,13 @@ export default {
       console.log(event);
       console.log(data);
       event.target.style.opacity = 0.5;
+      Bus.$emit("drag-start", data);
     },
     dragend(event, data) {
       console.log(event);
       console.log(data);
       event.target.style.opacity = "";
+      Bus.$emit("drag-ent");
     }
   }
 };
