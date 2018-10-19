@@ -1,9 +1,9 @@
 <template>
     <div class="toolbar">
-      <a class="icon">
+      <a class="icon" @click="zoomin">
         <font-awesome-icon icon="search-plus"></font-awesome-icon>
       </a>
-      <a class="icon">
+      <a class="icon" @click="zoomout">
         <font-awesome-icon icon="search-minus"></font-awesome-icon>
       </a>
       <span class="split"></span>
@@ -16,7 +16,17 @@
     </div>
 </template>
 <script>
-export default {};
+import Bus from '@/bus';
+export default {
+  methods: {
+    zoomin() {
+      Bus.$emit('zoomin');
+    },
+    zoomout() {
+      Bus.$emit('zoomout');
+    }
+  }
+};
 </script>
 <style scoped>
 .toolbar {

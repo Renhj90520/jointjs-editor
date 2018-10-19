@@ -4,30 +4,20 @@
   </ul>
 </template>
 <script>
-import SidebarItem from "./SidebarItem";
+import SidebarItem from './SidebarItem';
 export default {
   data() {
     return {
       items: [
         {
-          title: "General",
-          items: [{ type: "rectangle" }]
+          title: 'General',
+          items: [{ type: 'rectangle' }]
         }
       ]
     };
   },
-  methods: {
-    dragstart(event) {
-      console.log(event);
-      event.target.style.opacity = 0.5;
-    },
-    dragend(event) {
-      console.log(event);
-      event.target.style.opacity = "";
-    }
-  },
   components: {
-    "app-sidebar-item": SidebarItem
+    'app-sidebar-item': SidebarItem
   }
 };
 </script>

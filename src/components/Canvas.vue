@@ -4,49 +4,62 @@
     </div>
 </template>
 <script>
-import Bus from "@/bus";
+import Bus from '@/bus';
 export default {
   data() {
     return {
       graph: null,
-      dragSource: null
+      paper: null,
+      dragSource: null,
+      scaleLevel: 1
     };
   },
   mounted() {
     this.graph = new joint.dia.Graph();
-    const paper = new joint.dia.Paper({
+    this.paper = new joint.dia.Paper({
       el: this.$refs.paper,
       model: this.graph,
       width: 800,
       height: 1150,
       gridSize: 10,
       drawGrid: {
-        name: "doubleMesh",
+        name: 'doubleMesh',
         args: [
-          { color: "#f6f6f6", thickness: 1 }, // settings for the primary mesh
-          { color: "#efefef", scaleFactor: 5, thickness: 2 } //settings for the secondary mesh
+          { color: '#f6f6f6', thickness: 1 }, // settings for the primary mesh
+          { color: '#efefef', scaleFactor: 5, thickness: 2 } //settings for the secondary mesh
         ]
       },
-      background: { color: "#fff" }
+      background: { color: '#fff' }
     });
 
     this.$refs.paperWrapper.parentElement.scrollLeft = 700;
-    this.$refs.paperWrapper.parentElement.scrollTop = 500;
-    Bus.$on("drag-start", data => {
+    this.$refs.paperWrapper.parentElement.scrollTop = 460;
+    Bus.$on('drag-start', data => {
       this.dragSource = data;
     });
-    Bus.$on("drag-end", () => {
+    Bus.$on('drag-end', () => {
       this.dragSource = null;
+    });
+
+    const that = this;
+    Bus.$on('zoomin', () => {
+      that.scaleLevel = Math.min(3, that.scaleLevel + 0.2);
+      that.paper.scale(that.scaleLevel, that.scaleLevel);
+
+      // TODO set size
+    });
+    Bus.$on('zoomout', () => {
+      this.scaleLevel = Math.max(0.2, this.scaleLevel - 0.2);
+      this.paper.scale(this.scaleLevel, this.scaleLevel);
     });
   },
   methods: {
     drop(event) {
-      console.log(event);
-      console.log(this.dragSource);
+      const position = this.calculateXY(event);
       if (this.dragSource) {
         switch (this.dragSource.type) {
-          case "rectangle":
-            this.drawRect();
+          case 'rectangle':
+            this.drawRect(position.x, position.y);
             break;
           default:
             break;
@@ -54,40 +67,49 @@ export default {
       }
     },
     dragenter(event) {
-      console.log(event);
-      event.dataTransfer.dropEffect = "linkMove";
+      event.dataTransfer.dropEffect = 'linkMove';
     },
-    dragleave(event) {
-      console.log(event);
-    },
+    dragleave(event) {},
     dragover(event) {
-      console.log(event);
       event.preventDefault(); // Prevent default to allow drop
     },
-    drawRect() {
+    drawRect(x, y) {
       const rect = new joint.shapes.standard.Rectangle();
-      rect.position(100, 30);
-      rect.resize(100, 40);
+      rect.position(x, y);
+      rect.resize(120, 60);
       rect.attr({
-        body: { fill: "blue" },
+        body: { fill: '#fff' },
         label: {
-          text: "Hello",
-          fill: "white"
+          fill: '#000'
         },
         highlighter: {
-          name: "stroke",
+          name: 'stroke',
           options: {
             padding: 10,
             rx: 5,
             ry: 5,
             attrs: {
-              "stroke-width": 3,
-              stroke: "#FF0000"
+              'stroke-width': 3,
+              stroke: '#FF0000'
             }
           }
         }
       });
       rect.addTo(this.graph);
+    },
+    calculateXY(event) {
+      const paper = this.$refs.paper;
+      const stage = this.$refs.paper.parentElement.parentElement;
+      const paperOffsetLeft =
+        paper.offsetLeft - stage.scrollLeft + stage.parentElement.offsetLeft;
+      const paperOffsetTop =
+        paper.offsetTop -
+        stage.scrollTop +
+        stage.offsetTop +
+        stage.parentElement.offsetTop;
+      const x = event.pageX - paperOffsetLeft;
+      const y = event.pageY - paperOffsetTop;
+      return { x, y };
     }
   }
 };
