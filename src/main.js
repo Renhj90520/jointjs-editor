@@ -4,10 +4,11 @@ import Vue from "vue";
 import App from "./App";
 import "normalize.css";
 Vue.config.productionTip = false;
-
+window.$ = require("jquery");
 import "jointjs/dist/joint.css";
 window.joint = require("jointjs");
-
+import { extendTextEditor } from "./rappid/TextEditor";
+extendTextEditor();
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faSearchPlus,
