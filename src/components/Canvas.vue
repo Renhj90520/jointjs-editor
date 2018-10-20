@@ -48,11 +48,19 @@ export default {
       that.scaleLevel = Math.min(3, that.scaleLevel + 0.2);
       that.paper.scale(that.scaleLevel, that.scaleLevel);
 
-      // TODO set size
+      const newWidth = 800 * that.scaleLevel;
+      const newHeight = 1150 * that.scaleLevel;
+      that.$refs.paperWrapper.style.width = newWidth + "px";
+      that.paper.setDimensions(newWidth, newHeight);
     });
     Bus.$on("zoomout", () => {
       this.scaleLevel = Math.max(0.2, this.scaleLevel - 0.2);
       this.paper.scale(this.scaleLevel, this.scaleLevel);
+      
+      const newWidth = 800 * that.scaleLevel;
+      const newHeight = 1150 * that.scaleLevel;
+      that.$refs.paperWrapper.style.width = newWidth + "px";
+      that.paper.setDimensions(newWidth, newHeight);
     });
     this.initializeInlineTextEditor();
   },
