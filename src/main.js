@@ -10,7 +10,9 @@ Backbone.$ = $;
 import "jointjs/dist/joint.css";
 window.joint = require("jointjs");
 import { extendTextEditor } from "./rappid/TextEditor";
+import { extendSelection } from "./rappid/Selection";
 extendTextEditor();
+extendSelection();
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faSearchPlus,

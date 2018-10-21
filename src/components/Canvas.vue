@@ -37,8 +37,12 @@ export default {
 
     this.$refs.paperWrapper.parentElement.scrollLeft = 700;
     this.$refs.paperWrapper.parentElement.scrollTop = 460;
-    const extend = Backbone.Collection.extend();
-    this.selection = new extend();
+    this.selection = new joint.ui.Selection({
+      paper: this.paper,
+      graph: this.graph
+    }).on({
+      "selection-box:pointerdown": (cellView, evt) => {}
+    });
 
     Bus.$on("drag-start", data => {
       this.dragSource = data;
@@ -148,10 +152,10 @@ export default {
       });
 
       this.paper.on("element:pointerup", elementView => {
-        that.selection.reset([elementView.model]);
+        that.selection.collection.reset([elementView.model]);
       });
       this.paper.on("blank:pointerdown", () => {
-        that.selection.reset([]);
+        that.selection.collection.reset([]);
       });
 
       $(document.body).on("click", evt => {
@@ -160,16 +164,10 @@ export default {
           this.closeEditor();
         }
       });
-
       document.body.addEventListener("keydown", evt => {
         const code = evt.which || evt.keyCode;
-        if (
-          (code === 8 || code === 46) &&
-          !this.textEditor &&
-          !this.selection.isEmpty()
-        ) {
-          this.selection.first().remove();
-          this.selection.reset([]);
+        if ((code === 8 || code === 46) && !that.textEditor) {
+          that.graph.removeCells(that.selection.collection.toArray());
           return false;
         }
         return true;
@@ -183,7 +181,8 @@ export default {
         this.textEditor = null;
         this.cellViewUnderEdit = null;
       }
-    }
+    },
+    openTools(cellView) {}
   }
 };
 </script>
