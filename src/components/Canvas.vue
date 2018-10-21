@@ -13,7 +13,8 @@ export default {
       dragSource: null,
       scaleLevel: 1,
       textEditor: null,
-      cellViewUnderEdit: null
+      cellViewUnderEdit: null,
+      selection: null
     };
   },
   mounted() {
@@ -36,6 +37,9 @@ export default {
 
     this.$refs.paperWrapper.parentElement.scrollLeft = 700;
     this.$refs.paperWrapper.parentElement.scrollTop = 460;
+    const extend = Backbone.Collection.extend();
+    this.selection = new extend();
+
     Bus.$on("drag-start", data => {
       this.dragSource = data;
     });
@@ -56,7 +60,7 @@ export default {
     Bus.$on("zoomout", () => {
       this.scaleLevel = Math.max(0.2, this.scaleLevel - 0.2);
       this.paper.scale(this.scaleLevel, this.scaleLevel);
-      
+
       const newWidth = 800 * that.scaleLevel;
       const newHeight = 1150 * that.scaleLevel;
       that.$refs.paperWrapper.style.width = newWidth + "px";
@@ -124,10 +128,10 @@ export default {
       return { x, y };
     },
     initializeInlineTextEditor() {
+      const that = this;
       this.paper.on("cell:pointerdblclick", (cellView, evt) => {
         // clean up the old text editor if there was one
         this.closeEditor();
-        const that = this;
         const vTarget = joint.V(evt.target);
         const text = joint.ui.TextEditor.getTextElement(evt.target);
         if (text) {
@@ -142,11 +146,33 @@ export default {
           this.cellViewUnderEdit.setInteractivity(false);
         }
       });
+
+      this.paper.on("element:pointerup", elementView => {
+        that.selection.reset([elementView.model]);
+      });
+      this.paper.on("blank:pointerdown", () => {
+        that.selection.reset([]);
+      });
+
       $(document.body).on("click", evt => {
         const text = joint.ui.TextEditor.getTextElement(evt.target);
         if (this.textEditor && !text) {
           this.closeEditor();
         }
+      });
+
+      document.body.addEventListener("keydown", evt => {
+        const code = evt.which || evt.keyCode;
+        if (
+          (code === 8 || code === 46) &&
+          !this.textEditor &&
+          !this.selection.isEmpty()
+        ) {
+          this.selection.first().remove();
+          this.selection.reset([]);
+          return false;
+        }
+        return true;
       });
     },
     closeEditor() {

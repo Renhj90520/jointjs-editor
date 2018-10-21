@@ -5,6 +5,8 @@ import App from "./App";
 import "normalize.css";
 Vue.config.productionTip = false;
 window.$ = require("jquery");
+window.Backbone = require("backbone");
+Backbone.$ = $;
 import "jointjs/dist/joint.css";
 window.joint = require("jointjs");
 import { extendTextEditor } from "./rappid/TextEditor";
