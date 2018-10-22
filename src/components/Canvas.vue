@@ -4,7 +4,9 @@
     </div>
 </template>
 <script>
-import Bus from "@/bus";
+import Bus from '@/bus';
+import '../rappid/halo.css';
+import '../rappid/freetransform.css';
 export default {
   data() {
     return {
@@ -26,13 +28,13 @@ export default {
       height: 1150,
       gridSize: 10,
       drawGrid: {
-        name: "doubleMesh",
+        name: 'doubleMesh',
         args: [
-          { color: "#f6f6f6", thickness: 1 }, // settings for the primary mesh
-          { color: "#efefef", scaleFactor: 5, thickness: 2 } //settings for the secondary mesh
+          { color: '#f6f6f6', thickness: 1 }, // settings for the primary mesh
+          { color: '#efefef', scaleFactor: 5, thickness: 2 } //settings for the secondary mesh
         ]
       },
-      background: { color: "#fff" }
+      background: { color: '#fff' }
     });
 
     this.$refs.paperWrapper.parentElement.scrollLeft = 700;
@@ -41,33 +43,33 @@ export default {
       paper: this.paper,
       graph: this.graph
     }).on({
-      "selection-box:pointerdown": (cellView, evt) => {}
+      'selection-box:pointerdown': (cellView, evt) => {}
     });
 
-    Bus.$on("drag-start", data => {
+    Bus.$on('drag-start', data => {
       this.dragSource = data;
     });
-    Bus.$on("drag-end", () => {
+    Bus.$on('drag-end', () => {
       this.dragSource = null;
     });
 
     const that = this;
-    Bus.$on("zoomin", () => {
+    Bus.$on('zoomin', () => {
       that.scaleLevel = Math.min(3, that.scaleLevel + 0.2);
       that.paper.scale(that.scaleLevel, that.scaleLevel);
 
       const newWidth = 800 * that.scaleLevel;
       const newHeight = 1150 * that.scaleLevel;
-      that.$refs.paperWrapper.style.width = newWidth + "px";
+      that.$refs.paperWrapper.style.width = newWidth + 'px';
       that.paper.setDimensions(newWidth, newHeight);
     });
-    Bus.$on("zoomout", () => {
+    Bus.$on('zoomout', () => {
       this.scaleLevel = Math.max(0.2, this.scaleLevel - 0.2);
       this.paper.scale(this.scaleLevel, this.scaleLevel);
 
       const newWidth = 800 * that.scaleLevel;
       const newHeight = 1150 * that.scaleLevel;
-      that.$refs.paperWrapper.style.width = newWidth + "px";
+      that.$refs.paperWrapper.style.width = newWidth + 'px';
       that.paper.setDimensions(newWidth, newHeight);
     });
     this.initializeInlineTextEditor();
@@ -77,7 +79,7 @@ export default {
       const position = this.calculateXY(event);
       if (this.dragSource) {
         switch (this.dragSource.type) {
-          case "rectangle":
+          case 'rectangle':
             this.drawRect(position.x, position.y);
             break;
           default:
@@ -86,7 +88,7 @@ export default {
       }
     },
     dragenter(event) {
-      event.dataTransfer.dropEffect = "linkMove";
+      event.dataTransfer.dropEffect = 'linkMove';
     },
     dragleave(event) {},
     dragover(event) {
@@ -97,20 +99,20 @@ export default {
       rect.position(x, y);
       rect.resize(120, 60);
       rect.attr({
-        body: { fill: "#fff" },
+        body: { fill: '#fff' },
         label: {
-          text: "            ",
-          fill: "#000"
+          text: '            ',
+          fill: '#000'
         },
         highlighter: {
-          name: "stroke",
+          name: 'stroke',
           options: {
             padding: 10,
             rx: 5,
             ry: 5,
             attrs: {
-              "stroke-width": 3,
-              stroke: "#FF0000"
+              'stroke-width': 3,
+              stroke: '#FF0000'
             }
           }
         }
@@ -133,7 +135,7 @@ export default {
     },
     initializeInlineTextEditor() {
       const that = this;
-      this.paper.on("cell:pointerdblclick", (cellView, evt) => {
+      this.paper.on('cell:pointerdblclick', (cellView, evt) => {
         // clean up the old text editor if there was one
         this.closeEditor();
         const vTarget = joint.V(evt.target);
@@ -141,30 +143,30 @@ export default {
         if (text) {
           this.textEditor = new joint.ui.TextEditor({ text });
           this.textEditor.render(this.paper.el);
-          this.textEditor.on("text:change", newText => {
+          this.textEditor.on('text:change', newText => {
             const cell = that.cellViewUnderEdit.model;
             cell.prop(that.cellViewUnderEdit.textEditPath, newText);
           });
           this.cellViewUnderEdit = cellView;
-          this.cellViewUnderEdit.textEditPath = "attrs/label/text";
+          this.cellViewUnderEdit.textEditPath = 'attrs/label/text';
           this.cellViewUnderEdit.setInteractivity(false);
         }
       });
 
-      this.paper.on("element:pointerup", elementView => {
-        that.selection.collection.reset([elementView.model]);
+      this.paper.on('element:pointerup', elementView => {
+        that.openTools(elementView);
       });
-      this.paper.on("blank:pointerdown", () => {
+      this.paper.on('blank:pointerdown', () => {
         that.selection.collection.reset([]);
       });
 
-      $(document.body).on("click", evt => {
+      $(document.body).on('click', evt => {
         const text = joint.ui.TextEditor.getTextElement(evt.target);
         if (this.textEditor && !text) {
           this.closeEditor();
         }
       });
-      document.body.addEventListener("keydown", evt => {
+      document.body.addEventListener('keydown', evt => {
         const code = evt.which || evt.keyCode;
         if ((code === 8 || code === 46) && !that.textEditor) {
           that.graph.removeCells(that.selection.collection.toArray());
@@ -182,7 +184,30 @@ export default {
         this.cellViewUnderEdit = null;
       }
     },
-    openTools(cellView) {}
+    openTools(cellView) {
+      const cell = cellView.model;
+      if (!cell.isLink() && !this.selection.collection.contains(cell)) {
+        this.selection.collection.reset([]);
+
+        this.selection.collection.add(cell, { silent: true });
+
+        const freeTransform = new joint.ui.FreeTransform({
+          cellView,
+          allowOrthogonalResize: true,
+          allowRotation: true
+        });
+        freeTransform.render();
+
+        const halo = new joint.ui.Halo({
+          cellView,
+          theme: 'default',
+          boxContent: function(cellView) {
+            return cellView.model.get('type');
+          }
+        });
+        halo.render();
+      }
+    }
   }
 };
 </script>
