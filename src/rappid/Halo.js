@@ -323,32 +323,32 @@ export function extendHalo() {
           this
         );
       },
-      onHandlePointerDown: function(b) {
-        var c = (this._action = $(b.target)
+      onHandlePointerDown: function(evt) {
+        var c = (this._action = $(evt.target)
           .closest('.handle')
           .attr('data-action'));
         if (c) {
-          b.preventDefault(),
-            b.stopPropagation(),
-            (b = joint.util.normalizeEvent(b));
+          evt.preventDefault(),
+            evt.stopPropagation(),
+            (evt = joint.util.normalizeEvent(evt));
           var d = this.options.paper.snapToGrid({
-              x: b.clientX,
-              y: b.clientY
+              x: evt.clientX,
+              y: evt.clientY
             }),
             e = d.x,
             f = d.y;
           (this._localX = e),
             (this._localY = f),
-            (this._evt = b),
-            'mousedown' === b.type && 2 === b.button
-              ? this.triggerAction(c, 'contextmenu', b, e, f)
-              : (this.triggerAction(c, 'pointerdown', b, e, f),
-                this.delegateDocumentEvents(null, b.data));
+            (this._evt = evt),
+            'mousedown' === evt.type && 2 === evt.button
+              ? this.triggerAction(c, 'contextmenu', evt, e, f)
+              : (this.triggerAction(c, 'pointerdown', evt, e, f),
+                this.delegateDocumentEvents(null, evt.data));
         }
       },
-      onPieTogglePointerDown: function(a) {
-        a.stopPropagation();
-        var b = $(a.target).closest('.pie-toggle'),
+      onPieTogglePointerDown: function(evt) {
+        evt.stopPropagation();
+        var b = $(evt.target).closest('.pie-toggle'),
           c = b.attr('data-name');
         this.isOpen(c)
           ? this.toggleState(c)
@@ -356,9 +356,9 @@ export function extendHalo() {
             ? (this.toggleState(), this.toggleState(c))
             : this.toggleState(c);
       },
-      triggerAction: function(a, b, c) {
+      triggerAction: function(action, evtType, evt) {
         var d = Array.prototype.slice.call(arguments, 2);
-        d.unshift('action:' + a + ':' + b), this.trigger.apply(this, d);
+        d.unshift('action:' + action + ':' + evtType), this.trigger.apply(this, d);
       },
       stopBatch: function() {
         this.options.graph.stopBatch('halo', { halo: this.cid });

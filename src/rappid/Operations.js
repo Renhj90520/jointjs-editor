@@ -74,6 +74,26 @@ export class ElementOperation {
         icon: null
       },
       {
+        name: 'link',
+        position: 's',
+        events: {
+          pointerdown: 'startLinking',
+          pointermove: 'doLink',
+          pointerup: 'stopLinking'
+        },
+        icon: null
+      },
+      {
+        name: 'link',
+        position: 'w',
+        events: {
+          pointerdown: 'startLinking',
+          pointermove: 'doLink',
+          pointerup: 'stopLinking'
+        },
+        icon: null
+      },
+      {
         name: 'fork',
         position: 'ne',
         events: {
@@ -91,7 +111,7 @@ export class ElementOperation {
       },
       {
         name: 'rotate',
-        position: 'sw',
+        position: 'n',
         events: {
           pointerdown: 'startRotating',
           pointermove: 'doRotate',
@@ -132,7 +152,7 @@ export class ElementOperation {
   };
 
   functions = {
-    startLinking: function(a, b, c) {
+    startLinking: function(evt, b, c) {
       this.startBatch();
       var options = this.options,
         paper = options.paper,

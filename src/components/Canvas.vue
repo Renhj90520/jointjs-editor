@@ -206,6 +206,11 @@ export default {
           }
         });
         halo.render();
+        halo.removeHandle('unlink');
+        halo.removeHandle('clone');
+        halo.removeHandle('fork');
+        halo.removeHandle('remove');
+        halo.removeHandle('resize');
       }
     }
   }

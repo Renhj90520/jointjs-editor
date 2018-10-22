@@ -157,21 +157,21 @@ export function extendSelection() {
         }
         this._action = null;
       },
-      removeHandle: function(a) {
-        var b = joint.util.toArray(this.handles).findIndex(function(b) {
-            return b.name === a;
+      removeHandle: function(handleName) {
+        var handle = joint.util.toArray(this.handles).findIndex(function(b) {
+            return b.name === handleName;
           }),
-          c = this.handles[b];
+          c = this.handles[handle];
         return (
           c &&
             (joint.util.forIn(
               c.events,
               function(b, c) {
-                this.off("action:" + a + ":" + c);
+                this.off("action:" + handleName + ":" + c);
               }.bind(this)
             ),
-            this.$(".handle." + a).remove(),
-            this.handles.splice(b, 1)),
+            this.$(".handle." + handleName).remove(),
+            this.handles.splice(handle, 1)),
           this
         );
       },
