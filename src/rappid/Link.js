@@ -51,22 +51,22 @@ export function defineDefaultLink() {
         return new g.Path(d).bbox().width;
       })
     },
-    {
-      connectionPoint: function(line, view, magnet, opt, type, linkView) {
-        var markerWidth = linkView.model.getMarkerWidth(type);
-        opt = { offset: markerWidth, stroke: true };
-        // connection point for UML shapes lies on the root group containg all the shapes components
-        if (view.model.get('type').indexOf('uml') === 0) opt.selector = 'root';
-        return joint.connectionPoints.boundary.call(
-          this,
-          line,
-          view,
-          magnet,
-          opt,
-          type,
-          linkView
-        );
-      }
-    }
+    // {
+    //   connectionPoint: function(line, view, magnet, opt, type, linkView) {
+    //     var markerWidth = linkView.model.getMarkerWidth(type);
+    //     opt = { offset: markerWidth, stroke: true };
+    //     // connection point for UML shapes lies on the root group containg all the shapes components
+    //     if (view.model.get('type').indexOf('uml') === 0) opt.selector = 'root';
+    //     return joint.connectionPoints.boundary.call(
+    //       this,
+    //       line,
+    //       view,
+    //       magnet,
+    //       opt,
+    //       type,
+    //       linkView
+    //     );
+    //   }
+    // }
   );
 }

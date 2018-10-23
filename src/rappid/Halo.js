@@ -323,8 +323,8 @@ export function extendHalo() {
       //     this
       //   );
       // },
-      onHandlePointerDown: function(b) {
-        var c = (this._action = $(b.target)
+      onHandlePointerDown: function(evt) {
+        var c = (this._action = $(evt.target)
           .closest('.handle')
           .attr('data-action'));
         if (c) {
