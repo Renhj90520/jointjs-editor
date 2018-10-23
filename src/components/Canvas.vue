@@ -27,6 +27,7 @@ export default {
       width: 800,
       height: 1150,
       gridSize: 10,
+      defaultLink: new joint.shapes.app.Link(),
       drawGrid: {
         name: 'doubleMesh',
         args: [
@@ -206,6 +207,10 @@ export default {
           }
         });
         halo.render();
+        halo.removeHandle('resize');
+        halo.removeHandle('clone');
+        halo.removeHandle('fork');
+        halo.removeHandle('unlink');
       }
     }
   }

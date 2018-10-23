@@ -39,7 +39,7 @@ export class ElementOperation {
     handles: [
       {
         name: 'remove',
-        position: 'nw',
+        position: 'ne',
         events: { pointerdown: 'removeElement' },
         icon: null
       },
@@ -55,7 +55,7 @@ export class ElementOperation {
       },
       {
         name: 'clone',
-        position: 'n',
+        position: 'sw',
         events: {
           pointerdown: 'startCloning',
           pointermove: 'doClone',
@@ -64,7 +64,7 @@ export class ElementOperation {
         icon: null
       },
       {
-        name: 'link',
+        name: 'link_e',
         position: 'e',
         events: {
           pointerdown: 'startLinking',
@@ -74,8 +74,28 @@ export class ElementOperation {
         icon: null
       },
       {
+        name: 'link_w',
+        position: 'w',
+        events: {
+          pointerdown: 'startLinking',
+          pointermove: 'doLink',
+          pointerup: 'stopLinking'
+        },
+        icon: null
+      },
+      {
+        name: 'link_s',
+        position: 's',
+        events: {
+          pointerdown: 'startLinking',
+          pointermove: 'doLink',
+          pointerup: 'stopLinking'
+        },
+        icon: null
+      },
+      {
         name: 'fork',
-        position: 'ne',
+        position: 'w',
         events: {
           pointerdown: 'startForking',
           pointermove: 'doFork',
@@ -85,13 +105,13 @@ export class ElementOperation {
       },
       {
         name: 'unlink',
-        position: 'w',
+        position: 'nw',
         events: { pointerdown: 'unlinkElement' },
         icon: null
       },
       {
         name: 'rotate',
-        position: 'sw',
+        position: 'n',
         events: {
           pointerdown: 'startRotating',
           pointermove: 'doRotate',

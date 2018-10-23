@@ -13,10 +13,12 @@ import { extendTextEditor } from './rappid/TextEditor';
 import { extendSelection } from './rappid/Selection';
 import { extendHalo } from './rappid/Halo';
 import { extendFreeTransform } from './rappid/FreeTransform';
+import { defineDefaultLink } from './rappid/Link';
 extendTextEditor();
 extendSelection();
 extendHalo();
 extendFreeTransform();
+defineDefaultLink();
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faSearchPlus,
