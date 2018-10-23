@@ -276,15 +276,15 @@ export function extendHalo() {
           this
         );
       },
-      changeHandle: function(b, c) {
-        var d = this.getHandle(b);
-        return (
-          d &&
-            (this.removeHandle(b),
-            this.addHandle(joint.util.merge({ name: b }, d, c))),
-          this
-        );
-      },
+      // changeHandle: function(b, c) {
+      //   var d = this.getHandle(b);
+      //   return (
+      //     d &&
+      //       (this.removeHandle(b),
+      //       this.addHandle(joint.util.merge({ name: b }, d, c))),
+      //     this
+      //   );
+      // },
       hasHandle: function(a) {
         return this.getHandleIdx(a) !== -1;
       },
@@ -293,38 +293,38 @@ export function extendHalo() {
           return a.name === b;
         });
       },
-      getHandle: function(b) {
+      getHandle: function(handle) {
         return joint.util.toArray(this.handles).find(function(a) {
-          return a.name === b;
+          return a.name === handle.name && a.position === handle.position;
         });
       },
-      toggleHandle: function(a, b) {
-        var c = this.getHandle(a);
-        if (c) {
-          var d = this.$('.handle.' + a);
-          void 0 === b && (b = !d.hasClass('selected')),
-            d.toggleClass('selected', b);
-          var e = b ? c.iconSelected : c.icon;
-          e && this.setHandleIcon(d, e);
-        }
-        return this;
-      },
-      selectHandle: function(a) {
-        return this.toggleHandle(a, !0);
-      },
-      deselectHandle: function(a) {
-        return this.toggleHandle(a, !1);
-      },
-      deselectAllHandles: function() {
-        return (
-          joint.util.toArray(this.handles).forEach(function(a) {
-            this.deselectHandle(a.name);
-          }, this),
-          this
-        );
-      },
-      onHandlePointerDown: function(evt) {
-        var c = (this._action = $(evt.target)
+      // toggleHandle: function(a, b) {
+      //   var c = this.getHandle(a);
+      //   if (c) {
+      //     var d = this.$('.handle.' + a);
+      //     void 0 === b && (b = !d.hasClass('selected')),
+      //       d.toggleClass('selected', b);
+      //     var e = b ? c.iconSelected : c.icon;
+      //     e && this.setHandleIcon(d, e);
+      //   }
+      //   return this;
+      // },
+      // selectHandle: function(a) {
+      //   return this.toggleHandle(a, !0);
+      // },
+      // deselectHandle: function(a) {
+      //   return this.toggleHandle(a, !1);
+      // },
+      // deselectAllHandles: function() {
+      //   return (
+      //     joint.util.toArray(this.handles).forEach(function(a) {
+      //       this.deselectHandle(a.name);
+      //     }, this),
+      //     this
+      //   );
+      // },
+      onHandlePointerDown: function(b) {
+        var c = (this._action = $(b.target)
           .closest('.handle')
           .attr('data-action'));
         if (c) {
