@@ -2,12 +2,12 @@ export function defineDefaultLink() {
   joint.shapes.standard.Link.define(
     'app.Link',
     {
-      router: { name: 'normal' },
-      connector: { name: 'rounded' },
+      router: { name: 'manhattan' },
+      connector: { name: 'jumpover' },
       labels: [],
       attrs: {
         line: {
-          stroke: '#8f8f8f',
+          stroke: '#000000',
           strokeDasharray: 0,
           strokeWidth: 2,
           fill: 'none',
@@ -18,7 +18,7 @@ export function defineDefaultLink() {
           },
           targetMarker: {
             type: 'path',
-            d: 'M 0 -5 -10 0 0 5 z',
+            d: 'M 0 0 10 5 10 -5 z',
             stroke: 'none'
           }
         }
@@ -29,7 +29,7 @@ export function defineDefaultLink() {
         attrs: {
           rect: {
             fill: '#ffffff',
-            stroke: '#8f8f8f',
+            stroke: '#000000',
             strokeWidth: 1,
             refWidth: 10,
             refHeight: 10,
@@ -50,7 +50,7 @@ export function defineDefaultLink() {
       getDataWidth: _.memoize(function(d) {
         return new g.Path(d).bbox().width;
       })
-    },
+    }
     // {
     //   connectionPoint: function(line, view, magnet, opt, type, linkView) {
     //     var markerWidth = linkView.model.getMarkerWidth(type);

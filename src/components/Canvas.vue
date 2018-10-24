@@ -44,7 +44,9 @@ export default {
       paper: this.paper,
       graph: this.graph
     }).on({
-      'selection-box:pointerdown': (cellView, evt) => {}
+      'selection-box:pointerdown': (cellView, evt) => {
+        // deselect
+      }
     });
 
     Bus.$on('drag-start', data => {
@@ -74,6 +76,7 @@ export default {
       that.paper.setDimensions(newWidth, newHeight);
     });
     this.initializeInlineTextEditor();
+    this.initializeTools();
   },
   methods: {
     drop(event) {
@@ -154,11 +157,10 @@ export default {
         }
       });
 
-      this.paper.on('element:pointerup', elementView => {
-        that.openTools(elementView);
-      });
       this.paper.on('blank:pointerdown', () => {
-        that.selection.collection.reset([]);
+        // that.selection.collection.reset([]);
+        that.selection.cancelSelection();
+        that.paper.removeTools();
       });
 
       $(document.body).on('click', evt => {
@@ -176,6 +178,61 @@ export default {
         return true;
       });
     },
+    initializeTools() {
+      const that = this;
+      this.paper.on({
+        'element:pointerup': elementView => {
+          that.openTools(elementView);
+        },
+        // 'element:mouseenter': elementView => {
+        //   that.openTools(elementView, true);
+        // },
+        'link:pointerup': linkView => {
+          const link = linkView.model;
+          const linkTools = joint.linkTools;
+          const toolsView = new joint.dia.ToolsView({
+            name: 'link-pointerdown',
+            tools: [
+              new linkTools.Vertices(),
+              new linkTools.SourceAnchor(),
+              new linkTools.TargetAnchor(),
+              new linkTools.SourceArrowhead(),
+              new linkTools.TargetArrowhead(),
+              new linkTools.Segments(),
+              new linkTools.Boundary({ padding: 15 }),
+              new linkTools.Remove({ offset: -20, distance: 40 })
+            ]
+          });
+          that.selection.collection.reset([]);
+          that.selection.collection.add(link, { silent: true });
+          const paper = that.paper;
+          joint.ui.Halo.clear(paper);
+          joint.ui.FreeTransform.clear(paper);
+          paper.removeTools();
+
+          linkView.addTools(toolsView);
+        },
+        'link:mouseenter': linkView => {
+          if (linkView.hasTools()) return;
+
+          const linkTools = joint.linkTools;
+          const toolsView = new joint.dia.ToolsView({
+            name: 'link-hover',
+            tools: [
+              new linkTools.Vertices({ vertexAdding: false }),
+              new linkTools.SourceArrowhead(),
+              new linkTools.TargetArrowhead()
+            ]
+          });
+          linkView.addTools(toolsView);
+        },
+        'link:mouseleave': linkView => {
+          if (linkView.hasTools('link-hover')) {
+            linkView.removeTools();
+          }
+        }
+      });
+    },
     closeEditor() {
       if (this.textEditor) {
         this.textEditor.remove();
@@ -185,19 +242,21 @@ export default {
         this.cellViewUnderEdit = null;
       }
     },
-    openTools(cellView) {
+    openTools(cellView, isMouseEnter = false) {
       const cell = cellView.model;
       if (!cell.isLink() && !this.selection.collection.contains(cell)) {
-        this.selection.collection.reset([]);
+        if (!isMouseEnter) {
+          this.selection.collection.reset([]);
 
-        this.selection.collection.add(cell, { silent: true });
+          this.selection.collection.add(cell, { silent: true });
 
-        const freeTransform = new joint.ui.FreeTransform({
-          cellView,
-          allowOrthogonalResize: true,
-          allowRotation: true
-        });
-        freeTransform.render();
+          const freeTransform = new joint.ui.FreeTransform({
+            cellView,
+            allowOrthogonalResize: true,
+            allowRotation: true
+          });
+          freeTransform.render();
+        }
 
         const halo = new joint.ui.Halo({
           cellView,
@@ -211,6 +270,10 @@ export default {
         halo.removeHandle('clone');
         halo.removeHandle('fork');
         halo.removeHandle('unlink');
+        if (isMouseEnter) {
+          halo.removeHandle('rotate');
+          halo.removeHandle('remove');
+        }
       }
     }
   }
