@@ -16,11 +16,13 @@ export default {
       scaleLevel: 1,
       textEditor: null,
       cellViewUnderEdit: null,
-      selection: null
+      selection: null,
+      commandManager: null
     };
   },
   mounted() {
     this.graph = new joint.dia.Graph();
+    this.commandManager = new joint.dia.CommandManager({ graph:this.graph });
     this.paper = new joint.dia.Paper({
       el: this.$refs.paper,
       model: this.graph,
@@ -73,6 +75,15 @@ export default {
       that.$refs.paperWrapper.style.width = newWidth + 'px';
       that.paper.setDimensions(newWidth, newHeight);
     });
+
+    Bus.$on('redo', ()=>{
+      this.commandManager.redo();
+      this.selection.cancelSelection();
+    });
+    Bus.$on('undo', ()=>{
+      this.commandManager.undo();
+      this.selection.cancelSelection();
+    })
     this.initializeInlineTextEditor();
   },
   methods: {

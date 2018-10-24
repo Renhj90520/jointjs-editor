@@ -7,10 +7,10 @@
         <font-awesome-icon icon="search-minus"></font-awesome-icon>
       </a>
       <span class="split"></span>
-      <a class="icon">
+      <a class="icon" @click="undo">
         <font-awesome-icon icon="undo-alt"></font-awesome-icon>
       </a>
-      <a class="icon">
+      <a class="icon" @click="redo">
         <font-awesome-icon icon="redo-alt"></font-awesome-icon>
       </a>
     </div>
@@ -24,6 +24,12 @@ export default {
     },
     zoomout() {
       Bus.$emit('zoomout');
+    },
+    redo(){
+      BUs.$emit('redo');
+    },
+    undo(){
+      Bus.$emit('undo');
     }
   }
 };
