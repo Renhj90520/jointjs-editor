@@ -22,7 +22,7 @@ export default {
   },
   mounted() {
     this.graph = new joint.dia.Graph();
-    this.commandManager = new joint.dia.CommandManager({ graph:this.graph });
+    this.commandManager = new joint.dia.CommandManager({ graph: this.graph });
     this.paper = new joint.dia.Paper({
       el: this.$refs.paper,
       model: this.graph,
@@ -78,14 +78,31 @@ export default {
       that.paper.setDimensions(newWidth, newHeight);
     });
 
-    Bus.$on('redo', ()=>{
+    Bus.$on('redo', () => {
       this.commandManager.redo();
       this.selection.cancelSelection();
     });
-    Bus.$on('undo', ()=>{
+    Bus.$on('undo', () => {
       this.commandManager.undo();
       this.selection.cancelSelection();
-    })
+    });
+
+    Bus.$on('export', () => {
+      const aTag = document.createElement('a');
+      let blob;
+      aTag.download = 'graph.json';
+
+      blob = new Blob([JSON.stringify(this.graph)]);
+
+      const url = URL.createObjectURL(blob);
+      aTag.href = url;
+      aTag.click();
+      URL.revokeObjectURL(url);
+    });
+
+    Bus.$on('import', e => {
+      this.graph.fromJSON(JSON.parse(e));
+    });
     this.initializeInlineTextEditor();
     this.initializeTools();
   },
@@ -95,7 +112,7 @@ export default {
       if (this.dragSource) {
         switch (this.dragSource.type) {
           case 'rectangle':
-            this.drawRect(position.x, position.y);
+            this.drawRect(position.x, position.y, this.dragSource);
             break;
           default:
             break;
@@ -109,7 +126,7 @@ export default {
     dragover(event) {
       event.preventDefault(); // Prevent default to allow drop
     },
-    drawRect(x, y) {
+    drawRect(x, y, data) {
       const rect = new joint.shapes.standard.Rectangle();
       rect.position(x, y);
       rect.resize(120, 60);
@@ -132,6 +149,7 @@ export default {
           }
         }
       });
+      rect.data = data;
       rect.addTo(this.graph);
     },
     calculateXY(event) {

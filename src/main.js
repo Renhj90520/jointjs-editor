@@ -14,7 +14,7 @@ import { extendSelection } from './rappid/Selection';
 import { extendHalo } from './rappid/Halo';
 import { extendFreeTransform } from './rappid/FreeTransform';
 import { defineDefaultLink } from './rappid/Link';
-import { extendCommandManager } from './rappid/CommandManager'
+import { extendCommandManager } from './rappid/CommandManager';
 extendTextEditor();
 extendSelection();
 extendHalo();
@@ -28,7 +28,9 @@ import {
   faRedoAlt,
   faUndoAlt,
   faCaretDown,
-  faCaretRight
+  faCaretRight,
+  faFileImport,
+  faFileExport
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -38,7 +40,9 @@ library.add(
   faRedoAlt,
   faUndoAlt,
   faCaretDown,
-  faCaretRight
+  faCaretRight,
+  faFileImport,
+  faFileExport
 );
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
