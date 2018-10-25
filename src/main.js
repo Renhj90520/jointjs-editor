@@ -14,11 +14,13 @@ import { extendSelection } from './rappid/Selection';
 import { extendHalo } from './rappid/Halo';
 import { extendFreeTransform } from './rappid/FreeTransform';
 import { defineDefaultLink } from './rappid/Link';
+import { extendCommandManager } from './rappid/CommandManager'
 extendTextEditor();
 extendSelection();
 extendHalo();
 extendFreeTransform();
 defineDefaultLink();
+extendCommandManager();
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faSearchPlus,
