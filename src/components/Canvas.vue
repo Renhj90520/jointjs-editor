@@ -41,7 +41,7 @@ export default {
     });
 
     const cloud = new joint.shapes.custom.Cloud();
-    cloud.position(100, 100);
+    cloud.position(120, 80);
     cloud.addTo(this.graph);
 
     this.$refs.paperWrapper.parentElement.scrollLeft = 700;
