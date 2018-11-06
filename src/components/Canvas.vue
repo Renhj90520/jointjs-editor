@@ -4,9 +4,9 @@
     </div>
 </template>
 <script>
-import Bus from "@/bus";
-import "../rappid/halo.css";
-import "../rappid/freetransform.css";
+import Bus from '@/bus';
+import '../rappid/halo.css';
+import '../rappid/freetransform.css';
 export default {
   data() {
     return {
@@ -31,18 +31,39 @@ export default {
       gridSize: 10,
       defaultLink: new joint.shapes.app.Link(),
       drawGrid: {
-        name: "doubleMesh",
+        name: 'doubleMesh',
         args: [
-          { color: "#f6f6f6", thickness: 1 }, // settings for the primary mesh
-          { color: "#efefef", scaleFactor: 5, thickness: 2 } //settings for the secondary mesh
+          { color: '#f6f6f6', thickness: 1 }, // settings for the primary mesh
+          { color: '#efefef', scaleFactor: 5, thickness: 2 } //settings for the secondary mesh
         ]
       },
-      background: { color: "#fff" }
+      background: { color: '#fff' }
     });
 
     const cloud = new joint.shapes.custom.Cloud();
     cloud.position(120, 80);
     cloud.addTo(this.graph);
+
+    const clipboard = new joint.shapes.basic.Path({
+      size: { width: 120, height: 80 },
+      attrs: {
+        path: {
+          d:
+            'M384 112v352c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h80c0-35.29 28.71-64 64-64s64 28.71 64 64h80c26.51 0 48 21.49 48 48zM192 40c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24m96 114v-20a6 6 0 0 0-6-6H102a6 6 0 0 0-6 6v20a6 6 0 0 0 6 6h180a6 6 0 0 0 6-6z',
+          fill: 'black'
+        },
+        text: {
+          ref: 'path',
+          'font-size': 14,
+          'ref-x': 0.5,
+          'ref-y': 0,
+          'y-alignment': 'middle',
+          'x-alignment': 'middle',
+          text: 'text'
+        }
+      }
+    });
+    clipboard.addTo(this.graph);
 
     this.$refs.paperWrapper.parentElement.scrollLeft = 700;
     this.$refs.paperWrapper.parentElement.scrollTop = 460;
@@ -50,51 +71,51 @@ export default {
       paper: this.paper,
       graph: this.graph
     }).on({
-      "selection-box:pointerdown": (cellView, evt) => {
+      'selection-box:pointerdown': (cellView, evt) => {
         // deselect
       }
     });
 
-    Bus.$on("drag-start", data => {
+    Bus.$on('drag-start', data => {
       this.dragSource = data;
     });
-    Bus.$on("drag-end", () => {
+    Bus.$on('drag-end', () => {
       this.dragSource = null;
     });
 
     const that = this;
-    Bus.$on("zoomin", () => {
+    Bus.$on('zoomin', () => {
       that.scaleLevel = Math.min(3, that.scaleLevel + 0.2);
       that.paper.scale(that.scaleLevel, that.scaleLevel);
 
       const newWidth = 800 * that.scaleLevel;
       const newHeight = 1150 * that.scaleLevel;
-      that.$refs.paperWrapper.style.width = newWidth + "px";
+      that.$refs.paperWrapper.style.width = newWidth + 'px';
       that.paper.setDimensions(newWidth, newHeight);
     });
-    Bus.$on("zoomout", () => {
+    Bus.$on('zoomout', () => {
       this.scaleLevel = Math.max(0.2, this.scaleLevel - 0.2);
       this.paper.scale(this.scaleLevel, this.scaleLevel);
 
       const newWidth = 800 * that.scaleLevel;
       const newHeight = 1150 * that.scaleLevel;
-      that.$refs.paperWrapper.style.width = newWidth + "px";
+      that.$refs.paperWrapper.style.width = newWidth + 'px';
       that.paper.setDimensions(newWidth, newHeight);
     });
 
-    Bus.$on("redo", () => {
+    Bus.$on('redo', () => {
       this.commandManager.redo();
       this.selection.cancelSelection();
     });
-    Bus.$on("undo", () => {
+    Bus.$on('undo', () => {
       this.commandManager.undo();
       this.selection.cancelSelection();
     });
 
-    Bus.$on("export", () => {
-      const aTag = document.createElement("a");
+    Bus.$on('export', () => {
+      const aTag = document.createElement('a');
       let blob;
-      aTag.download = "graph.json";
+      aTag.download = 'graph.json';
 
       blob = new Blob([JSON.stringify(this.graph)]);
 
@@ -104,7 +125,7 @@ export default {
       URL.revokeObjectURL(url);
     });
 
-    Bus.$on("import", e => {
+    Bus.$on('import', e => {
       this.graph.fromJSON(JSON.parse(e));
     });
     this.initializeInlineTextEditor();
@@ -115,7 +136,7 @@ export default {
       const position = this.calculateXY(event);
       if (this.dragSource) {
         switch (this.dragSource.type) {
-          case "rectangle":
+          case 'rectangle':
             this.drawRect(position.x, position.y, this.dragSource);
             break;
           default:
@@ -124,7 +145,7 @@ export default {
       }
     },
     dragenter(event) {
-      event.dataTransfer.dropEffect = "linkMove";
+      event.dataTransfer.dropEffect = 'linkMove';
     },
     dragleave(event) {},
     dragover(event) {
@@ -135,20 +156,20 @@ export default {
       rect.position(x, y);
       rect.resize(120, 60);
       rect.attr({
-        body: { fill: "#fff" },
+        body: { fill: '#fff' },
         label: {
-          text: "            ",
-          fill: "#000"
+          text: '            ',
+          fill: '#000'
         },
         highlighter: {
-          name: "stroke",
+          name: 'stroke',
           options: {
             padding: 10,
             rx: 5,
             ry: 5,
             attrs: {
-              "stroke-width": 3,
-              stroke: "#FF0000"
+              'stroke-width': 3,
+              stroke: '#FF0000'
             }
           }
         }
@@ -172,7 +193,7 @@ export default {
     },
     initializeInlineTextEditor() {
       const that = this;
-      this.paper.on("cell:pointerdblclick", (cellView, evt) => {
+      this.paper.on('cell:pointerdblclick', (cellView, evt) => {
         // clean up the old text editor if there was one
         this.closeEditor();
         const vTarget = joint.V(evt.target);
@@ -180,29 +201,29 @@ export default {
         if (text) {
           this.textEditor = new joint.ui.TextEditor({ text });
           this.textEditor.render(this.paper.el);
-          this.textEditor.on("text:change", newText => {
+          this.textEditor.on('text:change', newText => {
             const cell = that.cellViewUnderEdit.model;
             cell.prop(that.cellViewUnderEdit.textEditPath, newText);
           });
           this.cellViewUnderEdit = cellView;
-          this.cellViewUnderEdit.textEditPath = "attrs/label/text";
+          this.cellViewUnderEdit.textEditPath = 'attrs/label/text';
           this.cellViewUnderEdit.setInteractivity(false);
         }
       });
 
-      this.paper.on("blank:pointerdown", () => {
+      this.paper.on('blank:pointerdown', () => {
         // that.selection.collection.reset([]);
         that.selection.cancelSelection();
         that.paper.removeTools();
       });
 
-      $(document.body).on("click", evt => {
+      $(document.body).on('click', evt => {
         const text = joint.ui.TextEditor.getTextElement(evt.target);
         if (this.textEditor && !text) {
           this.closeEditor();
         }
       });
-      document.body.addEventListener("keydown", evt => {
+      document.body.addEventListener('keydown', evt => {
         const code = evt.which || evt.keyCode;
         if ((code === 8 || code === 46) && !that.textEditor) {
           that.graph.removeCells(that.selection.collection.toArray());
@@ -214,17 +235,17 @@ export default {
     initializeTools() {
       const that = this;
       this.paper.on({
-        "element:pointerup": elementView => {
+        'element:pointerup': elementView => {
           that.openTools(elementView);
         },
         // 'element:mouseenter': elementView => {
         //   that.openTools(elementView, true);
         // },
-        "link:pointerup": linkView => {
+        'link:pointerup': linkView => {
           const link = linkView.model;
           const linkTools = joint.linkTools;
           const toolsView = new joint.dia.ToolsView({
-            name: "link-pointerdown",
+            name: 'link-pointerdown',
             tools: [
               new linkTools.Vertices(),
               new linkTools.SourceAnchor(),
@@ -245,12 +266,12 @@ export default {
 
           linkView.addTools(toolsView);
         },
-        "link:mouseenter": linkView => {
+        'link:mouseenter': linkView => {
           if (linkView.hasTools()) return;
 
           const linkTools = joint.linkTools;
           const toolsView = new joint.dia.ToolsView({
-            name: "link-hover",
+            name: 'link-hover',
             tools: [
               new linkTools.Vertices({ vertexAdding: false }),
               new linkTools.SourceArrowhead(),
@@ -259,8 +280,8 @@ export default {
           });
           linkView.addTools(toolsView);
         },
-        "link:mouseleave": linkView => {
-          if (linkView.hasTools("link-hover")) {
+        'link:mouseleave': linkView => {
+          if (linkView.hasTools('link-hover')) {
             linkView.removeTools();
           }
         }
@@ -293,19 +314,19 @@ export default {
 
         const halo = new joint.ui.Halo({
           cellView,
-          theme: "default",
+          theme: 'default',
           boxContent: function(cellView) {
-            return cellView.model.get("type");
+            return cellView.model.get('type');
           }
         });
         halo.render();
-        halo.removeHandle("resize");
-        halo.removeHandle("clone");
-        halo.removeHandle("fork");
-        halo.removeHandle("unlink");
+        halo.removeHandle('resize');
+        halo.removeHandle('clone');
+        halo.removeHandle('fork');
+        halo.removeHandle('unlink');
         if (isMouseEnter) {
-          halo.removeHandle("rotate");
-          halo.removeHandle("remove");
+          halo.removeHandle('rotate');
+          halo.removeHandle('remove');
         }
       }
     }
